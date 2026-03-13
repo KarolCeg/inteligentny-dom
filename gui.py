@@ -11,6 +11,11 @@ def przelacz():
     nowy_stan = not stan_swiatla.get()
     stan_swiatla.set(nowy_stan)
     
+
+    #zarowka - zmiana koloru
+    kolor = "yellow" if stan_swiatla.get() else "white"
+    canvas.itemconfig(zarowka, fill=kolor)
+
     # Aktualizacja wyglądu przycisku/etykiety w zależności od zmiennej
     if stan_swiatla.get():
         przycisk.config(text="ŚWIATŁO: WŁĄCZONE", bg="#b3ffb3")
@@ -37,7 +42,9 @@ przycisk = tk.Button(
 przycisk.pack(pady=50) 
 
 w = 3  # Grubość linii
-
+#budynek 
+#implementacja zmiennej sygnalizujacej stan
+zarowka = canvas.create_oval(120, 300, 170, 350, outline="black", width=2, fill="white")
 # sciany zewnetrzne
 canvas.create_line(50, 140, 50, 520, width=w)
 canvas.create_line(50, 520, 237, 520, width=w)
