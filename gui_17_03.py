@@ -13,7 +13,9 @@ panel.pack(side="right", fill="both", expand=True)
 swiatla = [
     {"stan": False, "kolor": "yellow", "nazwa": "Żarówka garaż"},
     {"stan": False, "kolor": "yellow", "nazwa": "Żarówka salon"},
-    {"stan": False, "kolor": "blue", "nazwa": "Wanna"}
+    {"stan": False, "kolor": "blue", "nazwa": "Wanna"},
+    {"stan": False, "kolor": "yellow", "nazwa": "Żarówka przedpokój"},
+    
 ]
 
 def przelacz(i):
@@ -33,10 +35,10 @@ def przelacz(i):
         )
 
 # rysowanie elementów na canvas
-swiatla[0]["canvas"] = canvas.create_oval(120, 300, 170, 350, outline="black", width=2, fill="white")
-swiatla[1]["canvas"] = canvas.create_oval(630, 125, 680, 175, outline="black", width=2, fill="white")
-swiatla[2]["canvas"] = canvas.create_oval(260, 100, 300, 200, outline="black", width=2, fill="white")
-
+swiatla[0]["canvas"] = canvas.create_oval(120, 300, 170, 350, outline="black", width=2, fill="white") #garaz
+swiatla[1]["canvas"] = canvas.create_oval(630, 125, 680, 175, outline="black", width=2, fill="white") #kuchnia
+swiatla[2]["canvas"] = canvas.create_oval(260, 100, 300, 200, outline="black", width=2, fill="white") #wanna
+swiatla[3]["canvas"] = canvas.create_oval(295, 350, 345, 400, outline="black", width=2, fill="white") #przedpokoj
 # tworzenie przycisków
 for i, s in enumerate(swiatla):
     btn = tk.Button(
@@ -48,7 +50,7 @@ for i, s in enumerate(swiatla):
         width=25,
         height=2
     )
-    btn.pack(pady=30)
+    btn.pack(pady=10)
     s["button"] = btn
 # grubość ścian
 w = 3
@@ -102,7 +104,7 @@ canvas.create_line(400, 500, 400, 380, width=w)
 # aktualizuj_zegar()
 # #--------koniec zegar--------
 
-# --- Zzegar z prostokatem za ---
+# --- zegar z prostokatem  ---
 def create_rounded_rect(canvas, x1, y1, x2, y2, radius=25, **kwargs):
     points = [x1+radius, y1, x1+radius, y1, x2-radius, y1, x2-radius, y1, x2, y1, x2, y1+radius, x2, y1+radius, x2, y2-radius, x2, y2-radius, x2, y2, x2-radius, y2, x2-radius, y2, x1+radius, y2, x1+radius, y2, x1, y2, x1, y2-radius, x1, y2-radius, x1, y1+radius, x1, y1+radius, x1, y1]
     return canvas.create_polygon(points, **kwargs, smooth=True)
