@@ -15,7 +15,8 @@ swiatla = [
     {"stan": False, "kolor": "yellow", "nazwa": "Żarówka salon"},
     {"stan": False, "kolor": "blue", "nazwa": "Wanna"},
     {"stan": False, "kolor": "yellow", "nazwa": "Żarówka przedpokój"},
-    
+     {"stan": False, "kolor": "yellow", "nazwa": "Żarówka łazienka"},
+      {"stan": False, "kolor": "yellow", "nazwa": "Żarówka salon"},
 ]
 
 def przelacz(i):
@@ -39,13 +40,15 @@ swiatla[0]["canvas"] = canvas.create_oval(120, 300, 170, 350, outline="black", w
 swiatla[1]["canvas"] = canvas.create_oval(630, 125, 680, 175, outline="black", width=2, fill="white") #kuchnia
 swiatla[2]["canvas"] = canvas.create_oval(260, 100, 300, 200, outline="black", width=2, fill="white") #wanna
 swiatla[3]["canvas"] = canvas.create_oval(295, 350, 345, 400, outline="black", width=2, fill="white") #przedpokoj
+swiatla[4]["canvas"] = canvas.create_oval(400, 125, 450, 175, outline="black", width=2, fill="white") #lazienka
+swiatla[5]["canvas"] = canvas.create_oval(630, 350, 680, 400, outline="black", width=2, fill="white") #salon
 # tworzenie przycisków
 for i, s in enumerate(swiatla):
     btn = tk.Button(
         panel,
         text=f"{s['nazwa']}: WYŁĄCZONE",
         command=lambda i=i: przelacz(i),
-        font=("Arial", 12, "bold"),
+        font=("Arial", 8, "bold"),
         bg="#ffb3b3",
         width=25,
         height=2
