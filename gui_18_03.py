@@ -35,13 +35,44 @@ def przelacz(i):
             bg="#ffb3b3"
         )
 
+
+#gui pod domem
+prostokat_rolety = canvas.create_rectangle(330, 540, 460, 600, outline="black", width=2, fill="white")
+canvas.create_text(395, 570, text="Rolety", font=("Arial", 12, "bold"))
+
+prostokat_ogrzewanie = canvas.create_rectangle(480, 540, 610, 600, outline="black", width=2, fill="white")
+canvas.create_text(545, 570, text="Ogrzewanie", font=("Arial", 12, "bold"))
+
+prostokat_okna = canvas.create_rectangle(630, 540, 760, 600, outline="black", width=2, fill="white")
+canvas.create_text(695, 570, text="Okna", font=("Arial", 12, "bold"))
+
+#logika systemy
+inne_systemy = {
+    "Rolety": {"stan": False, "id": prostokat_rolety, "kolor": "lightblue", "tekst_on": "OTWARTE", "tekst_off": "ZAMKNIĘTE"},
+    "Ogrzewanie": {"stan": False, "id": prostokat_ogrzewanie, "kolor": "orange", "tekst_on": "WŁĄCZONE", "tekst_off": "WYŁĄCZONE"},
+    "Okna": {"stan": False, "id": prostokat_okna, "kolor": "lightgreen", "tekst_on": "OTWARTE", "tekst_off": "ZAMKNIĘTE"}
+}
+
+def przelacz_inne(klucz):
+    system = inne_systemy[klucz]
+    system["stan"] = not system["stan"]
+    
+    if system["stan"]:
+        canvas.itemconfig(system["id"], fill=system["kolor"])
+        system["btn"].config(text=f"{klucz}: {system['tekst_on']}", bg="#b3ffb3")
+    else:
+        canvas.itemconfig(system["id"], fill="white")
+        system["btn"].config(text=f"{klucz}: {system['tekst_off']}", bg="#ffb3b3")
+
 # rysowanie elementów na canvas
 swiatla[0]["canvas"] = canvas.create_oval(120, 300, 170, 350, outline="black", width=2, fill="white") #garaz
 swiatla[1]["canvas"] = canvas.create_oval(630, 125, 680, 175, outline="black", width=2, fill="white") #kuchnia
 swiatla[2]["canvas"] = canvas.create_oval(260, 100, 300, 200, outline="black", width=2, fill="white") #wanna
 swiatla[3]["canvas"] = canvas.create_oval(295, 350, 345, 400, outline="black", width=2, fill="white") #przedpokoj
 swiatla[4]["canvas"] = canvas.create_oval(400, 125, 450, 175, outline="black", width=2, fill="white") #lazienka
-swiatla[5]["canvas"] = canvas.create_oval(630, 350, 680, 400, outline="black", width=2, fill="white") #salon
+swiatla[5]["canvas"] = canvas.create_oval(630, 350, 680, 400, outline="black", width=2, fill="white") #nie pamietam juz
+
+
 # tworzenie przycisków
 for i, s in enumerate(swiatla):
     btn = tk.Button(
@@ -55,6 +86,20 @@ for i, s in enumerate(swiatla):
     )
     btn.pack(pady=10)
     s["button"] = btn
+
+# Tworzenie przycisków systemy
+for klucz, dane in inne_systemy.items():
+    btn = tk.Button(
+        panel,
+        text=f"{klucz}: {dane['tekst_off']}", # Ustawiamy domyślny tekst ("ZAMKNIĘTE" lub "WYŁĄCZONE")
+        command=lambda k=klucz: przelacz_inne(k),
+        font=("Arial", 8, "bold"),
+        bg="#ffb3b3",
+        width=25,
+        height=2
+    )
+    btn.pack(pady=5)
+    dane["btn"] = btn
 # grubość ścian
 w = 3
 # ściany zewnętrzne
@@ -138,4 +183,5 @@ def aktualizuj_zegar():
 
 aktualizuj_zegar()
 # #--------koniec zegar--------
+
 root.mainloop()
