@@ -1,0 +1,183 @@
+import tkinter as tk
+
+root = tk.Tk()
+root.title("Inteligentny dom")
+
+canvas = tk.Canvas(root, width=820, height=650, bg="white", highlightthickness=0)
+canvas.pack(side="left")
+
+panel = tk.Frame(root, width=480, height=650, bg="#f0f0f0")
+panel.pack(side="right", fill="both", expand=True)
+
+# dane świateł
+swiatla = [
+    {"stan": False, "kolor": "yellow", "nazwa": "Żarówka garaż"},
+    {"stan": False, "kolor": "yellow", "nazwa": "Żarówka salon"},
+    {"stan": False, "kolor": "blue", "nazwa": "Wanna"},
+    {"stan": False, "kolor": "yellow", "nazwa": "Żarówka przedpokój"},
+    {"stan": False, "kolor": "yellow", "nazwa": "Żarówka łazienka"},
+    {"stan": False, "kolor": "yellow", "nazwa": "Żarówka salon"},
+]
+
+# gui systemów
+prostokat_rolety = canvas.create_rectangle(330, 540, 460, 600, outline="black", width=2, fill="white")
+canvas.create_text(395, 570, text="Rolety", font=("Arial", 12, "bold"))
+
+prostokat_ogrzewanie = canvas.create_rectangle(480, 540, 610, 600, outline="black", width=2, fill="white")
+canvas.create_text(545, 570, text="Ogrzewanie", font=("Arial", 12, "bold"))
+
+prostokat_okna = canvas.create_rectangle(630, 540, 760, 600, outline="black", width=2, fill="white")
+canvas.create_text(695, 570, text="Okna", font=("Arial", 12, "bold"))
+
+#czujniki ruchu plan jest tatki ze mamy dwa tryby ale również działaja czujniki które mogą nadpisać stan czegoś w jakims pokoju tzn maja wiekszą wartość jakości czy coś takiego
+#dzialac bedą tak ze uruchamiają swiatło i coś nie wiem wanna albo czajnik np
+czujniki = [
+    {"stan": False, "nazwa": "Ruch: Garaż", "canvas": canvas.create_oval(60, 150, 75, 165, outline="black", width=1, fill="green")},
+    {"stan": False, "nazwa": "Ruch: Łazienka", "canvas": canvas.create_oval(247, 60, 262, 75, outline="black", width=1, fill="green")},
+    {"stan": False, "nazwa": "Ruch: Kuchnia", "canvas": canvas.create_oval(775, 60, 790, 75, outline="black", width=1, fill="green")},
+    {"stan": False, "nazwa": "Ruch: Przedpokój", "canvas": canvas.create_oval(380, 260, 395, 275, outline="black", width=1, fill="green")},
+    {"stan": False, "nazwa": "Ruch: Salon", "canvas": canvas.create_oval(410, 475, 425, 490, outline="black", width=1, fill="green")}
+]
+
+# logika systemy
+inne_systemy = {
+    "Rolety": {"stan": False, "id": prostokat_rolety, "kolor": "lightblue"},
+    "Ogrzewanie": {"stan": False, "id": prostokat_ogrzewanie, "kolor": "orange"},
+    "Okna": {"stan": False, "id": prostokat_okna, "kolor": "lightgreen"}
+}
+
+# rysowanie elementów na canvas
+swiatla[0]["canvas"] = canvas.create_oval(120, 300, 170, 350, outline="black", width=2, fill="white") #garaz
+swiatla[1]["canvas"] = canvas.create_oval(630, 125, 680, 175, outline="black", width=2, fill="white") #kuchnia
+swiatla[2]["canvas"] = canvas.create_oval(260, 100, 300, 200, outline="black", width=2, fill="white") #wanna
+swiatla[3]["canvas"] = canvas.create_oval(295, 350, 345, 400, outline="black", width=2, fill="white") #przedpokoj
+swiatla[4]["canvas"] = canvas.create_oval(400, 125, 450, 175, outline="black", width=2, fill="white") #lazienka
+swiatla[5]["canvas"] = canvas.create_oval(630, 350, 680, 400, outline="black", width=2, fill="white") #salon
+
+#logika
+def tryb_praca():
+    # Tryb praca - ustawia na false tez do zmiany bo niektore bede true wtedy
+    for s in swiatla:
+        s["stan"] = False
+        canvas.itemconfig(s["canvas"], fill="white")
+        
+    for system in inne_systemy.values():
+        system["stan"] = False
+        canvas.itemconfig(system["id"], fill="white")
+
+def tryb_dom():
+    # Tryb dom - ustawia na true wszystko ale bedzie do zmiany niektore stany
+    for s in swiatla:
+        s["stan"] = True
+        canvas.itemconfig(s["canvas"], fill=s["kolor"])
+        
+    for system in inne_systemy.values():
+        system["stan"] = True
+        canvas.itemconfig(system["id"], fill=system["kolor"])
+
+#logika czujniki
+
+def przelacz_czujnik(i):
+    # Zmienia stan konkretnego czujnika
+    czujniki[i]["stan"] = not czujniki[i]["stan"]
+    
+    if czujniki[i]["stan"]:
+        # Jeśli wykryto ruch - kolor czerwony
+        canvas.itemconfig(czujniki[i]["canvas"], fill="red")
+        czujniki[i]["button"].config(text=f"{czujniki[i]['nazwa']}: WYKRYTO", bg="#ffb3b3")
+    else:
+        # Jeśli brak ruchu - kolor zielony
+        canvas.itemconfig(czujniki[i]["canvas"], fill="green")
+        czujniki[i]["button"].config(text=f"{czujniki[i]['nazwa']}: BRAK", bg="#b3ffb3")
+
+# przyciski
+btn_praca = tk.Button(
+    panel, 
+    text="TRYB PRACA\n(Wszystko OFF)", 
+    command=tryb_praca, 
+    font=("Arial", 14, "bold"), 
+    bg="#ff9999", 
+    width=20, 
+    height=4
+)
+btn_praca.pack(pady=40)
+
+btn_dom = tk.Button(
+    panel, 
+    text="TRYB DOM\n(Wszystko ON)", 
+    command=tryb_dom, 
+    font=("Arial", 14, "bold"), 
+    bg="#99ff99", 
+    width=20, 
+    height=4
+)
+btn_dom.pack(pady=20)
+
+for i, cz in enumerate(czujniki):
+    btn = tk.Button(
+        panel,
+        text=f"{cz['nazwa']}: BRAK",
+        command=lambda i=i: przelacz_czujnik(i),
+        font=("Arial", 10, "bold"),
+        bg="#b3ffb3",
+        width=25,
+        height=1
+    )
+    btn.pack(pady=5)
+    cz["button"] = btn  
+
+# grubość ścian
+w = 3
+# ściany zewnętrzne
+canvas.create_line(50, 140, 50, 520, width=w)
+canvas.create_line(50, 520, 237, 520, width=w)
+canvas.create_line(237, 520, 237, 500, width=w)
+canvas.create_line(237, 500, 280, 500, width=w)
+canvas.create_line(350, 500, 800, 500, width=w)
+canvas.create_line(800, 500, 800, 50, width=w)
+canvas.create_line(800, 50, 237, 50, width=w)
+canvas.create_line(237, 50, 237, 140, width=w)
+canvas.create_line(237, 140, 50, 140, width=w)
+# ściany wewnętrzne
+canvas.create_line(237, 140, 237, 250, width=w)
+canvas.create_line(237, 350, 237, 500, width=w)
+canvas.create_line(237, 250, 400, 250, width=w)
+canvas.create_line(400, 250, 400, 290, width=w)
+canvas.create_line(400, 290, 420, 290, width=w)
+canvas.create_line(500, 290, 520, 290, width=w)
+canvas.create_line(520, 50, 520, 290, width=w)
+canvas.create_line(400, 500, 400, 380, width=w)
+
+# --- zegar z prostokatem  ---
+def create_rounded_rect(canvas, x1, y1, x2, y2, radius=25, **kwargs):
+    points = [x1+radius, y1, x1+radius, y1, x2-radius, y1, x2-radius, y1, x2, y1, x2, y1+radius, x2, y1+radius, x2, y2-radius, x2, y2-radius, x2, y2, x2-radius, y2, x2-radius, y2, x1+radius, y2, x1+radius, y2, x1, y2, x1, y2-radius, x1, y2-radius, x1, y1+radius, x1, y1+radius, x1, y1]
+    return canvas.create_polygon(points, **kwargs, smooth=True)
+
+# tlo zegara
+create_rounded_rect(canvas, 30, 540, 300, 620, radius=20, fill="#333333", outline="black")
+#tekst zegara
+zegar_text_id = canvas.create_text(165, 580, text="00:00:00", fill="white", font=("Courier", 32, "bold"))
+
+# --- logika zegar---
+godziny, minuty, sekundy = 0, 0, 0
+
+def aktualizuj_zegar():
+    global godziny, minuty, sekundy
+    sekundy += 1
+    if sekundy >= 60:
+        sekundy = 0
+        minuty += 1
+        if minuty >= 60:
+            minuty = 0
+            godziny += 1
+            if godziny >= 24:
+                godziny = 0
+
+    czas_str = f"{godziny:02d}:{minuty:02d}:{sekundy:02d}"
+    # aktualizacja tekstu
+    canvas.itemconfig(zegar_text_id, text=czas_str)
+    root.after(1, aktualizuj_zegar)
+
+aktualizuj_zegar()
+
+root.mainloop()
