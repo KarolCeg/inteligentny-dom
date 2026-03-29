@@ -21,19 +21,19 @@ swiatla = [
 
 # gui systemów
 prostokat_rolety = canvas.create_rectangle(330, 540, 460, 600, outline="black", width=2, fill="white")
-canvas.create_text(395, 570, text="Rolety", font=("Arial", 12, "bold"))
+rolety_text = canvas.create_text(395, 570, text="Rolety \n zamkniete",justify = "center", font=("Arial", 12, "bold"))
 
 prostokat_ogrzewanie = canvas.create_rectangle(480, 540, 610, 600, outline="black", width=2, fill="white")
-canvas.create_text(545, 570, text="Ogrzewanie", font=("Arial", 12, "bold"))
+ogrzewanie_text = canvas.create_text(545, 570, text="Ogrzewanie \n wylaczone",justify = "center", font=("Arial", 12, "bold"))
 
 prostokat_okna = canvas.create_rectangle(630, 540, 760, 600, outline="black", width=2, fill="white")
-canvas.create_text(695, 570, text="Okna", font=("Arial", 12, "bold"))
+okna_text = canvas.create_text(695, 570, text="Okna \n zamkniete",justify = "center", font=("Arial", 12, "bold"))
 
 # logika systemy
 inne_systemy = {
-    "Rolety": {"stan": False, "id": prostokat_rolety, "kolor": "lightblue"},
-    "Ogrzewanie": {"stan": False, "id": prostokat_ogrzewanie, "kolor": "orange"},
-    "Okna": {"stan": False, "id": prostokat_okna, "kolor": "lightgreen"}
+    "Rolety": {"stan": False, "id": prostokat_rolety,"id_text":rolety_text,"text" : "Rolety \n zamkniete","alt_text": "Rolety \n otwarte", "kolor": "lightblue"},
+    "Ogrzewanie": {"stan": False, "id": prostokat_ogrzewanie,"id_text":ogrzewanie_text,"text" : "Ogrzewanie \n wylaczone","alt_text": "Ogrzewanie \n wlaczone", "kolor": "orange"},
+    "Okna": {"stan": False, "id": prostokat_okna,"id_text":okna_text,"text" : "Okna \n zamkniete","alt_text": "Okna \n otwarte", "kolor": "lightgreen"}
 }
 
 # rysowanie elementów na canvas
@@ -54,6 +54,7 @@ def tryb_praca():
     for system in inne_systemy.values():
         system["stan"] = False
         canvas.itemconfig(system["id"], fill="white")
+        canvas.itemconfig(system["id_text"],text=system["text"])
 
 def tryb_dom():
     # Tryb dom - ustawia na true wszystko ale bedzie do zmiany niektore stany
@@ -64,6 +65,9 @@ def tryb_dom():
     for system in inne_systemy.values():
         system["stan"] = True
         canvas.itemconfig(system["id"], fill=system["kolor"])
+        canvas.itemconfig(system["id_text"],text=system["alt_text"])
+
+
 
 # przyciski
 btn_praca = tk.Button(
@@ -87,7 +91,6 @@ btn_dom = tk.Button(
     height=4
 )
 btn_dom.pack(pady=20)
-
 
 # grubość ścian
 w = 3
